@@ -28,12 +28,13 @@ export const handler = async (
 };
 
 async function scrapeAnswer(problem: string): Promise<string | null> {
-  const searchUrl = `https://quizlet.com/search?query=${
-    encodeURIComponent(problem)
-  }`;
+  const searchUrl = `https://quizlet.com/search?query=${encodeURIComponent(problem)}`;
+  const headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+  };
 
   try {
-    const response = await axiod.get(searchUrl);
+    const response = await axiod.get(searchUrl, { headers });
     const html = response.data;
 
     // HTMLを解析
@@ -45,8 +46,7 @@ async function scrapeAnswer(problem: string): Promise<string | null> {
     );
 
     if (answerElement) {
-      const answer = answerElement.textContent?.trim() ||
-        "答えが見つかりませんでした";
+      const answer = answerElement.textContent?.trim() || "答えが見つかりませんでした";
       return answer;
     } else {
       return null;
